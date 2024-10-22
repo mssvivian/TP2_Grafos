@@ -11,8 +11,8 @@
 #include "graph.h" 
 using namespace std;
 
-double media_Dijkstra_semHeap(int vezes, const string &arquivo){
-        Grafo grafo(arquivo,false,true);
+double media_Dijkstra_semHeap(int vezes, const string &arquivo, bool matriz){
+        Grafo grafo(arquivo,matriz,true);
         int i = 0;
         double acumulado_DsH = 0;
         while (i<vezes){
@@ -27,8 +27,8 @@ double media_Dijkstra_semHeap(int vezes, const string &arquivo){
         return acumulado_DsH;
     }
 
-double media_Dijkstra_comHeap(int vezes, const string &arquivo){
-        Grafo grafo(arquivo,false,true);
+double media_Dijkstra_comHeap(int vezes, const string &arquivo, bool matriz){
+        Grafo grafo(arquivo,matriz,true);
         int i = 0;
         double acumulado_DcH = 0;
         while (i<vezes){
@@ -45,15 +45,18 @@ double media_Dijkstra_comHeap(int vezes, const string &arquivo){
 
 int main(int argc, char *argv[]) {
     //fazer isso para os 5 grafos 
-    Grafo grafo("grafo_W_1.txt",false,true);
-    double sem_heap = media_Dijkstra_semHeap(50,"grafo_W_1.txt");
-    double com_heap = media_Dijkstra_comHeap(50,"grafo_W_1.txt");
+    // (vezes,grafo,matriz,peso)
+    double sem_heap = media_Dijkstra_semHeap(50,"grafo_W_3.txt",false);
+    double com_heap = media_Dijkstra_comHeap(50,"grafo_W_3.txt",false);
 
     cout << setprecision(6) << sem_heap/50 << endl;
     cout << setprecision(6) << com_heap/50 << endl;
-    
-    grafo.algoritmo_Dijkstra(10,"arvore_1.txt",1,1);
-    
+
+    sem_heap = media_Dijkstra_semHeap(50,"grafo_W_3.txt",true);
+    com_heap = media_Dijkstra_comHeap(50,"grafo_W_3.txt",true);
+
+    cout << setprecision(6) << sem_heap/50 << endl;
+    cout << setprecision(6) << com_heap/50 << endl;    
 
     /*int d = 0;
     //distancia entre 2 pontos
