@@ -82,5 +82,11 @@ public:
     // Algoritmo de Dijkstra que calcula a distancia de 1 vertice para todos os outros, retorna o vetor de distancia e a arvore geradora 
     vector<float> algoritmo_Dijkstra(unsigned int s, const string& outputFile, bool write_tree, bool Heap);
 
+    // funçao distancia -- entra com booleano de heap, vertice inicial e final, retorna a distancia entre esses 2 pontos
+    float distancia_peso(unsigned int start, unsigned int end, bool Heap);
+
+    // funçao distancia -- entra com booleano de heap, vertice inicial e final, retorna a distancia entre esses 2 pontos
+    vector<unsigned int> caminho_minimo_peso(unsigned int start, unsigned int end, bool Heap);
+
 };
 #endif // GRAPH_H

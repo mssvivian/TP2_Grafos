@@ -443,12 +443,14 @@ void Grafo::imprimirComponentesConexas(const map<unsigned int, vector<vector<uns
     }
 }
 
+
 // Algoritmo de Dijkstra que calcula a distância de um vértice para todos os outros
 // Retorna o vetor de distâncias e opcionalmente escreve a árvore geradora em arquivo
 vector<float> Grafo::algoritmo_Dijkstra(unsigned int s, const string& outputFile, bool write_tree, bool Heap) {
     // Inicializando o vetor de distâncias com infinito
     dist.assign(vertices + 1, numeric_limits<float>::infinity());
     pai.assign(vertices + 1, -1);
+    vector<bool> visitado(vertices + 1, false);
     if (!grafo_peso){
         cerr << "Essa função é apenas para grafos com peso" << endl;
         return dist;
@@ -466,26 +468,28 @@ vector<float> Grafo::algoritmo_Dijkstra(unsigned int s, const string& outputFile
         while (!pq.empty()) {
             unsigned int u = pq.top().second;
             pq.pop();
-
-            // Para cada vizinho v de u
-            const vector<tuple<unsigned int,float>>& vizinhos = usaMatriz ? getVizinhosMatriz_peso(u) : listAdj_peso[u];
-            for (const auto& vizinho : vizinhos) {
-                unsigned int v = get<0>(vizinho);
-                float peso = get<1>(vizinho);
-                if (peso < 0){
-                    cerr << "A biblioteca ainda nao implementa caminhos minimos com pesos negativos." << endl;
-                    return dist;
-                }
-                if (dist[v] > dist[u] + peso) {
-                    dist[v] = dist[u] + peso;  // Atualiza a distância de v
-                    pai[v] = u;  // Armazena o pai para reconstruir o caminho
-                    pq.push({dist[v], v});  // Adiciona v à fila de prioridade
+            if (!visitado[u]){
+                // Para cada vizinho v de u
+                visitado[u] = true;
+                const vector<tuple<unsigned int,float>>& vizinhos = usaMatriz ? getVizinhosMatriz_peso(u) : listAdj_peso[u];
+                for (const auto& vizinho : vizinhos) {
+                    unsigned int v = get<0>(vizinho);
+                    float peso = get<1>(vizinho);
+                    if (peso < 0){
+                        cerr << "A biblioteca ainda nao implementa caminhos minimos com pesos negativos." << endl;
+                        return dist;
+                    }
+                    if (dist[v] > dist[u] + peso) {
+                        dist[v] = dist[u] + peso;  // Atualiza a distância de v
+                        pai[v] = u;  // Armazena o pai para reconstruir o caminho
+                        pq.push({dist[v], v});  // Adiciona v à fila de prioridade
                     }
                 }
             }
+        }
     } else {
         // Usando vetor para o caso Heap == false
-        vector<bool> visitado(vertices + 1, false);
+        
         for (unsigned int i = 0; i < vertices; ++i) {
             // Seleciona o vértice u não visitado com a menor distância
             float menorDist = numeric_limits<float>::infinity();
@@ -526,5 +530,36 @@ vector<float> Grafo::algoritmo_Dijkstra(unsigned int s, const string& outputFile
     return dist;
 }
 
+// funçao distancia -- entra com booleano de heap, vertice inicial e final, retorna a distancia entre esses 2 pontos
+float Grafo::distancia_peso(unsigned int start, unsigned int end, bool Heap) {
+    // Calcula a distância de 'start' para todos os outros vértices
+    vector<float> distancias = algoritmo_Dijkstra(start, "", false, Heap);
+
+    // Retorna a distância do vértice 'start' para o vértice 'end'
+    return distancias[end];
+}
+// funçao caminho minimos -- entra com booleano de heap, vertice inicial e final, retorna o caminho mínimo entre esses 2 pontos
+vector<unsigned int> Grafo::caminho_minimo_peso(unsigned int start, unsigned int end, bool Heap) {
+    // Calcula a distância de 'start' para todos os outros vértices e constrói a árvore geradora
+    algoritmo_Dijkstra(start, "", false, Heap);
+
+    // Vetor para armazenar o caminho mínimo
+    vector<unsigned int> caminho;
+
+    // Reconstrói o caminho mínimo a partir do vetor de pais
+    for (unsigned int v = end; v != -1; v = pai[v]) {
+        caminho.push_back(v);
+    }
+
+    // O caminho está ao contrário, então invertemos
+    reverse(caminho.begin(), caminho.end());
+
+    // Verifica se o caminho encontrado é válido (se o último vértice é 'start')
+    if (caminho.front() != start) {
+        return {}; // Retorna um vetor vazio se não houver caminho
+    }
+
+    return caminho;
+}
 
 

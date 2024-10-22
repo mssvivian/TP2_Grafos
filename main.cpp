@@ -11,6 +11,34 @@
 #include "graph.h" 
 using namespace std;
 
+
+// Função para escrever distâncias e caminhos no arquivo de texto
+void escreve_distancias_e_caminhos_no_arquivo(const vector<pair<float, vector<unsigned int>>>& dist_e_caminhos, const string& nome_arquivo) {
+    // Abre o arquivo para escrita
+    ofstream arquivo(nome_arquivo);
+    
+    // Verifica se o arquivo foi aberto corretamente
+    if (!arquivo.is_open()) {
+        cerr << "Erro ao abrir o arquivo: " << nome_arquivo << endl;
+        return;
+    }
+
+    // Escreve as distâncias e caminhos no arquivo
+    for (size_t i = 0; i < dist_e_caminhos.size(); ++i) {
+        arquivo << "Distância de 10 a " << ((i+1)*10+10) << ": " << dist_e_caminhos[i].first << "\n";
+        arquivo << "Caminho de 10 a " << ((i+1)*10+10) << ":\n";
+        for (const auto& vertice : dist_e_caminhos[i].second) {
+            arquivo << vertice << " ";
+        }
+        arquivo << "\n\n";
+    }
+
+    // Fecha o arquivo
+    arquivo.close();
+    cout << "Distâncias e caminhos gravados com sucesso em " << nome_arquivo << endl;
+}
+
+
 double media_Dijkstra_semHeap(int vezes, const string &arquivo, bool matriz){
         Grafo grafo(arquivo,matriz,true);
         int i = 0;
@@ -46,17 +74,56 @@ double media_Dijkstra_comHeap(int vezes, const string &arquivo, bool matriz){
 int main(int argc, char *argv[]) {
     //fazer isso para os 5 grafos 
     // (vezes,grafo,matriz,peso)
-    double sem_heap = media_Dijkstra_semHeap(50,"grafo_W_3.txt",false);
-    double com_heap = media_Dijkstra_comHeap(50,"grafo_W_3.txt",false);
+    
+    Grafo grafo_teste("grafo_W_1.txt", false, true);
+    
+    // Vetor para armazenar distâncias e caminhos
+    vector<pair<float, vector<unsigned int>>> dist_e_caminhos;
+
+    // Calcula as distâncias e caminhos de 10 até os outros vértices
+    dist_e_caminhos.push_back({grafo_teste.distancia_peso(10, 20, true), grafo_teste.caminho_minimo_peso(10, 20, true)});
+    dist_e_caminhos.push_back({grafo_teste.distancia_peso(10, 30, true), grafo_teste.caminho_minimo_peso(10, 30, true)});
+    dist_e_caminhos.push_back({grafo_teste.distancia_peso(10, 40, true), grafo_teste.caminho_minimo_peso(10, 40, true)});
+    dist_e_caminhos.push_back({grafo_teste.distancia_peso(10, 50, true), grafo_teste.caminho_minimo_peso(10, 50, true)});
+    dist_e_caminhos.push_back({grafo_teste.distancia_peso(10, 60, true), grafo_teste.caminho_minimo_peso(10, 60, true)});
+
+    // Escreve as distâncias e caminhos no arquivo de texto
+    escreve_distancias_e_caminhos_no_arquivo(dist_e_caminhos, "distancias_e_caminhos_grafo1_comheap.txt");
+
+    // Vetor para armazenar distâncias e caminhos
+    vector<pair<float, vector<unsigned int>>> dist_e_caminhos_sh;
+
+    // Calcula as distâncias e caminhos de 10 até os outros vértices
+    dist_e_caminhos_sh.push_back({grafo_teste.distancia_peso(10, 20, false), grafo_teste.caminho_minimo_peso(10, 20, false)});
+    dist_e_caminhos_sh.push_back({grafo_teste.distancia_peso(10, 30, false), grafo_teste.caminho_minimo_peso(10, 30, false)});
+    dist_e_caminhos_sh.push_back({grafo_teste.distancia_peso(10, 40, false), grafo_teste.caminho_minimo_peso(10, 40, false)});
+    dist_e_caminhos_sh.push_back({grafo_teste.distancia_peso(10, 50, false), grafo_teste.caminho_minimo_peso(10, 50, false)});
+    dist_e_caminhos_sh.push_back({grafo_teste.distancia_peso(10, 60, false), grafo_teste.caminho_minimo_peso(10, 60, false)});
+
+    // Escreve as distâncias e caminhos no arquivo de texto
+    escreve_distancias_e_caminhos_no_arquivo(dist_e_caminhos_sh, "distancias_e_caminhos_grafo1_semheap.txt");
+
+
+    //isso aqui é pra comparar os tempos 
+    double sem_heap = media_Dijkstra_semHeap(50,"grafo_W_1.txt",false);
+    double com_heap = media_Dijkstra_comHeap(50,"grafo_W_1.txt",false);
 
     cout << setprecision(6) << sem_heap/50 << endl;
     cout << setprecision(6) << com_heap/50 << endl;
 
-    sem_heap = media_Dijkstra_semHeap(50,"grafo_W_3.txt",true);
-    com_heap = media_Dijkstra_comHeap(50,"grafo_W_3.txt",true);
+    sem_heap = media_Dijkstra_semHeap(50,"grafo_W_1.txt",true);
+    com_heap = media_Dijkstra_comHeap(50,"grafo_W_1.txt",true);
 
     cout << setprecision(6) << sem_heap/50 << endl;
     cout << setprecision(6) << com_heap/50 << endl;    
+
+
+
+
+
+
+
+
 
     /*int d = 0;
     //distancia entre 2 pontos
