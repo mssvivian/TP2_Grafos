@@ -562,4 +562,14 @@ vector<unsigned int> Grafo::caminho_minimo_peso(unsigned int start, unsigned int
     return caminho;
 }
 
+// função transforma o caminho mínimo dos índices para o caminho mínimo com o nome de cada pesquisador
+vector <string> Grafo::caminho_minimo_nomes(std::vector<std::string> cod, vector<int> caminho){
+    // cod é o vetor que codifica o índice para o nome de cada pesquisador
+    std::vector<std::string> output;
+    for (size_t i = 0; i < caminho.size(); ++i){
+        output.push_back(cod[caminho[i]]); // adiciona o nome do pesquisador ao novo caminho
 
+    }
+
+    return output;
+}
