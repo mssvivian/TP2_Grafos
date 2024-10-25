@@ -88,5 +88,8 @@ public:
     // funçao distancia -- entra com booleano de heap, vertice inicial e final, retorna a distancia entre esses 2 pontos
     vector<unsigned int> caminho_minimo_peso(unsigned int start, unsigned int end, bool Heap);
 
+    // função transforma o caminho mínimo dos índices para o caminho mínimo com o nome de cada pesquisador
+    vector <string> Grafo::caminho_minimo_nomes(std::vector<std::string> cod, vector<int> caminho);
+
 };
 #endif // GRAPH_H
