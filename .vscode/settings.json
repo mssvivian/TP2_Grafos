@@ -3,6 +3,8 @@
         "tuple": "cpp",
         "limits": "cpp",
         "iostream": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "initializer_list": "cpp",
+        "valarray": "cpp"
     }
 }

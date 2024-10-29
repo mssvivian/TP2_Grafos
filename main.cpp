@@ -13,7 +13,7 @@ using namespace std;
 
 
 // Função para escrever distâncias e caminhos no arquivo de texto
-void escreve_distancias_e_caminhos_no_arquivo(const vector<pair<float, vector<unsigned int>>>& dist_e_caminhos, const string& nome_arquivo) {
+void escreve_distancias_e_caminhos_no_arquivo(const vector<pair<float, vector<float>>>& dist_e_caminhos, const string& nome_arquivo) {
     // Abre o arquivo para escrita
     ofstream arquivo(nome_arquivo);
     
@@ -38,8 +38,33 @@ void escreve_distancias_e_caminhos_no_arquivo(const vector<pair<float, vector<un
     cout << "Distâncias e caminhos gravados com sucesso em " << nome_arquivo << endl;
 }
 
+// Função para escrever distâncias e caminhos com nomes no arquivo de texto
+void escreve_distancias_e_caminhos_no_arquivo_nome(const vector<pair<float, vector<string>>>& dist_e_caminhos, const string& nome_arquivo) {
+    // Abre o arquivo para escrita
+    ofstream arquivo(nome_arquivo);
+    
+    // Verifica se o arquivo foi aberto corretamente
+    if (!arquivo.is_open()) {
+        cerr << "Erro ao abrir o arquivo: " << nome_arquivo << endl;
+        return;
+    }
 
-double media_Dijkstra_semHeap(int vezes, const string &arquivo, bool matriz){
+    // Escreve as distâncias e caminhos no arquivo
+    for (size_t i = 0; i < dist_e_caminhos.size(); ++i) {
+        arquivo << "Distância: " << dist_e_caminhos[i].first << "\n";
+        arquivo << "Caminho:\n";
+        for (const auto& vertice : dist_e_caminhos[i].second) {
+            arquivo << vertice << ", ";
+        }
+        arquivo << "\n\n";
+    }
+
+    // Fecha o arquivo
+    arquivo.close();
+    cout << "Distâncias e caminhos gravados com sucesso em " << nome_arquivo << endl;
+}
+
+double acumulado_Dijkstra_semHeap(int vezes, const string &arquivo, bool matriz){
         Grafo grafo(arquivo,matriz,true);
         int i = 0;
         double acumulado_DsH = 0;
@@ -55,7 +80,7 @@ double media_Dijkstra_semHeap(int vezes, const string &arquivo, bool matriz){
         return acumulado_DsH;
     }
 
-double media_Dijkstra_comHeap(int vezes, const string &arquivo, bool matriz){
+double acumulado_Dijkstra_comHeap(int vezes, const string &arquivo, bool matriz){
         Grafo grafo(arquivo,matriz,true);
         int i = 0;
         double acumulado_DcH = 0;
@@ -75,8 +100,25 @@ int main(int argc, char *argv[]) {
     //fazer isso para os 5 grafos 
     // (vezes,grafo,matriz,peso)
     
-    Grafo grafo_teste("grafo_W_1.txt", false, true);
-    
+    Grafo grafo_teste("rede_colaboracao.txt", false, true);
+    grafo_teste.lerArquivoParaMapEVetor("rede_colaboracao_vertices.txt");
+
+    // Vetor para armazenar distâncias e caminhos
+    vector<pair<float, vector<string>>> dist_e_caminhos;
+
+    // Calcula as distâncias e caminhos de 10 até os outros vértices
+    dist_e_caminhos.push_back({grafo_teste.distancia_nomes("Edsger W. Dijkstra", "Alan M. Turing", true), grafo_teste.caminho_minimo_nomes("Edsger W. Dijkstra", "Alan M. Turing")});
+    dist_e_caminhos.push_back({grafo_teste.distancia_nomes("Edsger W. Dijkstra", "J. B. Kruskal", true), grafo_teste.caminho_minimo_nomes("Edsger W. Dijkstra", "J. B. Kruskal")});
+    dist_e_caminhos.push_back({grafo_teste.distancia_nomes("Edsger W. Dijkstra", "Jon M. Kleinberg", true), grafo_teste.caminho_minimo_nomes("Edsger W. Dijkstra", "Jon M. Kleinberg")});
+    dist_e_caminhos.push_back({grafo_teste.distancia_nomes("Edsger W. Dijkstra", "Éva Tardos", true), grafo_teste.caminho_minimo_nomes("Edsger W. Dijkstra", "Éva Tardos")});
+    dist_e_caminhos.push_back({grafo_teste.distancia_nomes("Edsger W. Dijkstra", "Daniel R. Figueiredo", true), grafo_teste.caminho_minimo_nomes("Edsger W. Dijkstra", "Daniel R. Figueiredo")});
+
+    // Escreve as distâncias e caminhos no arquivo de texto
+    escreve_distancias_e_caminhos_no_arquivo_nome(dist_e_caminhos, "distancias_e_caminhos_grafo_nomes.txt");
+
+
+
+    /*
     // Vetor para armazenar distâncias e caminhos
     vector<pair<float, vector<unsigned int>>> dist_e_caminhos;
 
@@ -105,17 +147,17 @@ int main(int argc, char *argv[]) {
 
 
     //isso aqui é pra comparar os tempos 
-    double sem_heap = media_Dijkstra_semHeap(50,"grafo_W_1.txt",false);
-    double com_heap = media_Dijkstra_comHeap(50,"grafo_W_1.txt",false);
+    double sem_heap = acumulado_Dijkstra_semHeap(50,"grafo_W_1.txt",false);
+    double com_heap = acumulado_Dijkstra_comHeap(50,"grafo_W_1.txt",false);
 
     cout << setprecision(6) << sem_heap/50 << endl;
     cout << setprecision(6) << com_heap/50 << endl;
 
-    sem_heap = media_Dijkstra_semHeap(50,"grafo_W_1.txt",true);
-    com_heap = media_Dijkstra_comHeap(50,"grafo_W_1.txt",true);
+    sem_heap = acumulado_Dijkstra_semHeap(50,"grafo_W_1.txt",true);
+    com_heap = acumulado_Dijkstra_comHeap(50,"grafo_W_1.txt",true);
 
     cout << setprecision(6) << sem_heap/50 << endl;
-    cout << setprecision(6) << com_heap/50 << endl;    
+    cout << setprecision(6) << com_heap/50 << endl;   */ 
 
 
 

@@ -417,7 +417,7 @@ map<unsigned int, vector<vector<unsigned int>>, greater<unsigned int>> Grafo::Co
 }
 
 // Imprimir Componentes Conexas
-void Grafo::imprimirComponentesConexas(const map<unsigned int, vector<vector<unsigned int>>, std::greater<unsigned int>>& componentesConexas) {
+void Grafo::imprimirComponentesConexas(const map<unsigned int, vector<vector<unsigned int>>, greater<unsigned int>>& componentesConexas) {
     if (componentesConexas.empty()) {
         cout << "Nenhuma componente conexa encontrada." << endl;
         return;
@@ -493,7 +493,7 @@ vector<float> Grafo::algoritmo_Dijkstra(unsigned int s, const string& outputFile
         for (unsigned int i = 0; i < vertices; ++i) {
             // Seleciona o vértice u não visitado com a menor distância
             float menorDist = numeric_limits<float>::infinity();
-            unsigned int u = -1;
+            unsigned int u;
 
             for (unsigned int v = 1; v <= vertices; ++v) {
                 if (!visitado[v] && dist[v] < menorDist) {
@@ -561,5 +561,56 @@ vector<unsigned int> Grafo::caminho_minimo_peso(unsigned int start, unsigned int
 
     return caminho;
 }
+
+// Função para ler o arquivo e preencher o mapa e o vetor
+void Grafo::lerArquivoParaMapEVetor(const string& nomeArquivo) {
+
+    ifstream arquivo(nomeArquivo);
+    string linha;
+
+    while (getline(arquivo, linha)) {
+        stringstream ss(linha);
+        string indice_str, nome;
+        
+        while (getline(ss, indice_str, ',') && getline(ss, nome)) {
+            int indice = stoi(indice_str);
+            mapa_nomes[nome] = indice;
+            if (indice >= vetor_nomes.size()) {
+                vetor_nomes.resize(indice + 1);
+            }
+            vetor_nomes[indice] = nome;
+        }
+    }
+
+}
+
+// função transforma o caminho mínimo dos índices para o caminho mínimo com o nome de cada pesquisador
+vector <string> Grafo::caminho_minimo_nomes(string inicio, string fim){
+    
+    unsigned int id_inicio = mapa_nomes[inicio];
+    unsigned int id_fim = mapa_nomes[fim];
+    vector<unsigned int> resultado_busca = caminho_minimo_peso(id_inicio,id_fim,true);
+    vector<string> output;
+
+    for (unsigned int i = 0; i < resultado_busca.size(); ++i){
+        output.push_back(vetor_nomes[resultado_busca[i]]); // adiciona o nome do pesquisador ao novo caminho
+
+    }
+
+    return output;
+}
+
+// função que calcula e retorna a distancia entre dois nomes na rede de colaboração 
+float Grafo::distancia_nomes(string inicio, string fim, bool Heap) {
+    unsigned int id_inicio = mapa_nomes[inicio];
+    unsigned int id_fim = mapa_nomes[fim];
+    // Calcula a distância de 'start' para todos os outros vértices
+    vector<float> distancias = algoritmo_Dijkstra(id_inicio, "", false, Heap);
+
+    // Retorna a distância do vértice 'start' para o vértice 'end'
+    return distancias[id_fim];
+}
+
+
 
 
