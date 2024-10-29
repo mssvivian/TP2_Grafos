@@ -90,13 +90,5 @@ public:
     // funçao distancia -- entra com booleano de heap, vertice inicial e final, retorna a distancia entre esses 2 pontos
     vector<unsigned int> caminho_minimo_peso(unsigned int start, unsigned int end, bool Heap);
 
-    // Função para ler o arquivo e preencher o mapa e o vetor
-    void lerArquivoParaMapEVetor(const string& nomeArquivo);
-
-    // função transforma o caminho mínimo dos índices para o caminho mínimo com o nome de cada pesquisador
-    vector <string> caminho_minimo_nomes(string inicio, string fim);
-
-    float distancia_nomes(string inicio, string fim, bool Heap);
-
 };
 #endif // GRAPH_H

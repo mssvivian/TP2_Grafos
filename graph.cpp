@@ -610,7 +610,3 @@ float Grafo::distancia_nomes(string inicio, string fim, bool Heap) {
     // Retorna a distância do vértice 'start' para o vértice 'end'
     return distancias[id_fim];
 }
-
-
-
-
